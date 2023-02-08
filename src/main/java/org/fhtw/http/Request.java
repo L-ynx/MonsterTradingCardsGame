@@ -30,4 +30,9 @@ public class Request {
     }
 
 
+    public void print() {
+        System.out.println("Method: " + method);
+        System.out.println("Path: " + path);
+        System.out.println("Body: " + body);
+    }
 }

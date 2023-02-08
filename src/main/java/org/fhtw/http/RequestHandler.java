@@ -2,6 +2,8 @@ package org.fhtw.http;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RequestHandler implements Runnable {
     private final Socket socket;
@@ -12,29 +14,48 @@ public class RequestHandler implements Runnable {
 
     @Override
     public void run() {
-        Request request = parseRequest();
+        try {
+            Request request = parseRequest();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeClient();
+        }
     }
+
 
     private Request parseRequest() throws IOException {
         Request request = new Request();
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    }
 
-    private void handleRequest() throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        OutputStream os = socket.getOutputStream();
+        String versionString = br.readLine();
+        final String[] splitVersionString = versionString.split(" ");
+        request.setMethod(splitVersionString[0]);
+        request.setPath(splitVersionString[1]);
 
-
-        StringBuilder request = new StringBuilder();
-        while (br.ready()) {
-            request.append((char) br.read());
+        String line;
+        int contentLength = 0;
+        while ((line = br.readLine()).length() > 0) {
+            if (line.startsWith("Content-Length: ")) {
+                contentLength = Integer.parseInt(line.substring("Content-Length: ".length()));
+            }
         }
 
-        System.out.println("Received request:\n" + request);
-        String response = "HTTP/1.0 200 OK\\r\\n\\r\\nHello, World!";
-        os.write(response.getBytes());
+        char[] buffer = new char[contentLength];
+        br.read(buffer, 0, contentLength);
+        request.setBody(new String(buffer));
+        request.print();
+
         br.close();
-        os.close();
-        socket.close();
+
+        return request;
+    }
+
+    private void closeClient() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
