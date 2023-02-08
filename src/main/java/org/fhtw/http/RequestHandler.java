@@ -8,6 +8,9 @@ import java.util.List;
 public class RequestHandler implements Runnable {
     private final Socket socket;
 
+    private BufferedReader br;
+    private OutputStream out;
+
     public RequestHandler(Socket socket) {
         this.socket = socket;
     }
@@ -15,7 +18,12 @@ public class RequestHandler implements Runnable {
     @Override
     public void run() {
         try {
-            Request request = parseRequest();
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            Request request = new Request(br);
+
+            out = socket.getOutputStream();
+            String response = "HTTP/1.0 200 OK\r\n\r\nHello, World!";
+            out.write(response.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -24,35 +32,12 @@ public class RequestHandler implements Runnable {
     }
 
 
-    private Request parseRequest() throws IOException {
-        Request request = new Request();
-        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-        String versionString = br.readLine();
-        final String[] splitVersionString = versionString.split(" ");
-        request.setMethod(splitVersionString[0]);
-        request.setPath(splitVersionString[1]);
-
-        String line;
-        int contentLength = 0;
-        while ((line = br.readLine()).length() > 0) {
-            if (line.startsWith("Content-Length: ")) {
-                contentLength = Integer.parseInt(line.substring("Content-Length: ".length()));
-            }
-        }
-
-        char[] buffer = new char[contentLength];
-        br.read(buffer, 0, contentLength);
-        request.setBody(new String(buffer));
-        request.print();
-
-        br.close();
-
-        return request;
-    }
-
     private void closeClient() {
         try {
+            if (br != null)
+                br.close();
+            if (out != null)
+                out.close();
             socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
