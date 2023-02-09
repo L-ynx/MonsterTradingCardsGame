@@ -1,18 +1,20 @@
 package org.fhtw.http;
 
+import org.fhtw.application.router.Controller;
+import org.fhtw.application.router.Router;
+
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RequestHandler implements Runnable {
     private final Socket socket;
-
+    private final Router router;
     private BufferedReader br;
     private OutputStream out;
 
-    public RequestHandler(Socket socket) {
+    public RequestHandler(Socket socket, Router router) {
         this.socket = socket;
+        this.router = router;
     }
 
     @Override
@@ -20,10 +22,14 @@ public class RequestHandler implements Runnable {
         try {
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Request request = new Request(br);
+            Response response = new Response();
 
+            Controller controller = router.route(request.getPath());
+            if (controller != null) {
+                response = controller.process(request);
+            }
             out = socket.getOutputStream();
-            String response = "HTTP/1.0 200 OK\r\n\r\nHello, World!";
-            out.write(response.getBytes());
+            out.write(response.responseBuilder().getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {

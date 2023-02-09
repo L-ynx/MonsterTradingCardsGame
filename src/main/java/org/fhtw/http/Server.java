@@ -1,11 +1,18 @@
 package org.fhtw.http;
 
+import org.fhtw.application.router.Router;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
     private final int PORT = 10001;
+    private final Router router;
+
+    public Server(Router router) {
+        this.router = router;
+    }
 
     public void start() {
         ThreadGroup group = new ThreadGroup("MyThreadGroup");
@@ -15,7 +22,7 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Accepted connection: " + socket.getInetAddress());
-                RequestHandler request = new RequestHandler(socket);
+                RequestHandler request = new RequestHandler(socket, router);
                 new Thread(group, request).start();
 
                 // List current threads for testing purposes
