@@ -26,11 +26,11 @@ public class Server {
                 new Thread(group, request).start();
 
                 // List current threads for testing purposes
-                Thread[] threads = new Thread[group.activeCount()];
+               /* Thread[] threads = new Thread[group.activeCount()];
                 group.enumerate(threads);
                 for (Thread t : threads) {
                     System.out.println("Thread: " + t.getName() + ", State: " + t.getState());
-                }
+                }*/
             }
         } catch (IOException e) {
             e.printStackTrace();

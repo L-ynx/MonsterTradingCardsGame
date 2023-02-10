@@ -11,7 +11,7 @@ public class PackagesController implements Controller {
         if (request.getMethod().equals("POST"))
             return createPackage();
 
-        return null;
+        return response;
     }
 
     private Response createPackage() {

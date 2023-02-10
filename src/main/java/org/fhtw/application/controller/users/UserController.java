@@ -1,5 +1,6 @@
 package org.fhtw.application.controller.users;
 
+import org.fhtw.application.model.Credentials;
 import org.fhtw.application.router.Controller;
 import org.fhtw.http.Request;
 import org.fhtw.http.Response;
@@ -11,11 +12,11 @@ public class UserController implements Controller {
     public Response process(Request request) {
         switch (request.getMethod()) {
             case "GET":
-                return userData();
+                return getUserData(request);
             case "POST":
-                return registerUser();
+                return registerUser(request);
             case "PUT":
-                return updateUser();
+                return updateUser(request);
         }
 
         response.setHttpStatus(Status.BAD_REQUEST);
@@ -24,18 +25,21 @@ public class UserController implements Controller {
     }
 
 
-    private Response updateUser() {
+    private Response updateUser(Request request) {
         response.setHttpStatus(Status.CREATED);
         return response;
     }
 
-    private Response registerUser() {
+    private Response registerUser(Request request) {
+        Credentials cred = request.getBodyAs(Credentials.class);
+        System.out.println(cred);
+
         response.setHttpStatus(Status.OK);
         return response;
     }
 
 
-    private Response userData() {
+    private Response getUserData(Request request) {
         response.setHttpStatus(Status.OK);
         return response;
     }

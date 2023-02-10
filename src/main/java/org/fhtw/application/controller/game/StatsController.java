@@ -10,10 +10,10 @@ public class StatsController implements Controller {
         if (request.getMethod().equals("GET"))
             return retrieveStats();
 
-        return null;
+        return response;
     }
 
     private Response retrieveStats() {
-        return null;
+        return response;
     }
 }

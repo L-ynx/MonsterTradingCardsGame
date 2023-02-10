@@ -9,17 +9,24 @@ public class TradingController implements Controller {
     public Response process(Request request) {
         if (request.getMethod().equals("GET"))
             return retrieveDeals();
-        if (request.getMethod().equals("POST"))
+        if (request.getMethod().equals("POST")) {
+            if (request.getPath().startsWith("/tradings/"))
+                return trade();
             return createDeal();
+        }
 
-        return null;
+        return response;
+    }
+
+    private Response trade() {
+        return response;
     }
 
     private Response createDeal() {
-        return null;
+        return response;
     }
 
     private Response retrieveDeals() {
-        return null;
+        return response;
     }
 }

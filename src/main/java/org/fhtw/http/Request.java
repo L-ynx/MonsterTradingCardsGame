@@ -1,5 +1,8 @@
 package org.fhtw.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -7,6 +10,8 @@ public class Request {
     private String method;
     private String path;
     private String body;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public Request(BufferedReader br) {
         parseRequest(br);
@@ -57,6 +62,15 @@ public class Request {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public <T> T getBodyAs(Class <T> clazz) {
+        try {
+            return objectMapper.readValue(body, clazz);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
 

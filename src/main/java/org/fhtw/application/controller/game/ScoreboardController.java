@@ -10,10 +10,10 @@ public class ScoreboardController implements Controller {
         if (request.getMethod().equals("GET"))
             return retrieveScoreboard();
 
-        return null;
+        return response;
     }
 
     private Response retrieveScoreboard() {
-        return null;
+        return response;
     }
 }

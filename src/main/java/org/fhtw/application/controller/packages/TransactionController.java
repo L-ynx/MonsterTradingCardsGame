@@ -10,10 +10,10 @@ public class TransactionController implements Controller {
         if (request.getMethod().equals("POST"))
             return acquirePackage();
 
-        return null;
+        return response;
     }
 
     private Response acquirePackage() {
-        return null;
+        return response;
     }
 }

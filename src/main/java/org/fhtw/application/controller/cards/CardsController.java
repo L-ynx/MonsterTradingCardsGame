@@ -10,10 +10,10 @@ public class CardsController implements Controller {
         if (request.getMethod().equals("GET"))
             return showCards();
 
-        return null;
+        return response;
     }
 
     private Response showCards() {
-        return null;
+        return response;
     }
 }

@@ -12,14 +12,14 @@ public class DeckController implements Controller {
         else if (request.getMethod().equals("PUT"))
             return configureDeck();
 
-        return null;
+        return response;
     }
 
     private Response configureDeck() {
-        return null;
+        return response;
     }
 
     private Response showDeck() {
-        return null;
+        return response;
     }
 }

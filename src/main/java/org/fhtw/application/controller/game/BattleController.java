@@ -10,10 +10,10 @@ public class BattleController implements Controller {
         if (request.getMethod().equals("POST"))
             return battle();
 
-        return null;
+        return response;
     }
 
     private Response battle() {
-        return null;
+        return response;
     }
 }
