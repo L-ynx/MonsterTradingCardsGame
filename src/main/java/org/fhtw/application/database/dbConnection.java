@@ -5,10 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class dbConnection {
-    // TODO: Replace values after creating database
-    private static final String URL = "jdbc:postgresql://hostname:port/database";
-    private static final String USER = "user";
-    private static final String PASSWORD = "password";
+    private static final String URL = "jdbc:postgresql://localhost:5432/mtcg";
+    private static final String USER = "mtcgadmin";
+    private static final String PASSWORD = "root";
 
     public static Connection getConnection() {
         Connection connection = null;

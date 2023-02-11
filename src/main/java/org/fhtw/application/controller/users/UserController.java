@@ -1,13 +1,19 @@
 package org.fhtw.application.controller.users;
 
 import org.fhtw.application.model.Credentials;
+import org.fhtw.application.repository.Repository;
+import org.fhtw.application.repository.UserRepository;
 import org.fhtw.application.router.Controller;
 import org.fhtw.http.Request;
 import org.fhtw.http.Response;
 import org.fhtw.http.Status;
 
 public class UserController implements Controller {
+    public UserController(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
 
+    private final UserRepository userRepo;
     @Override
     public Response process(Request request) {
         switch (request.getMethod()) {
@@ -34,7 +40,10 @@ public class UserController implements Controller {
         Credentials cred = request.getBodyAs(Credentials.class);
         System.out.println(cred);
 
-        response.setHttpStatus(Status.OK);
+        if (userRepo.findUser(cred.getUsername()) != null) {
+
+        }
+
         return response;
     }
 

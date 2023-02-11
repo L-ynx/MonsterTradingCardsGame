@@ -10,15 +10,20 @@ import org.fhtw.application.controller.trading.TradingController;
 import org.fhtw.application.controller.users.LoginController;
 import org.fhtw.application.controller.packages.PackagesController;
 import org.fhtw.application.controller.users.UserController;
+import org.fhtw.application.repository.Repository;
+import org.fhtw.application.repository.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Router {
     private final Map<String, Controller> handler = new HashMap<>();
+    private final Map<String, Repository> repositories;
 
-    public Router() {
-        handler.put("/users", new UserController());
+    public Router(Map<String, Repository> repositories) {
+        this.repositories = repositories;
+
+        handler.put("/users", new UserController((UserRepository) repositories.get("user")));
         handler.put("/sessions", new LoginController());
         handler.put("/packages", new PackagesController());
         handler.put("/transactions/packages", new TransactionController());
