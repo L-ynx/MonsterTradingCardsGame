@@ -2,14 +2,14 @@ package org.fhtw.http;
 
 public class Response {
 
-    private String contentType;
+    private String contentType = "text/plain";
     private Status httpStatus = Status.BAD_REQUEST;
     private String body;
 
     protected String responseBuilder() {
-        return "HTTP1/1 " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\r\n" +
-                "Content-Type: " + contentType + "\r\n" +
-                "\r\n" +
+        return "HTTP/1.1 " + httpStatus.getStatusCode() + " " + httpStatus.getStatusMessage() + "\n" +
+                "Content-Type: " + contentType + "\n" +
+                "\n" +
                 body;
     }
     public String getContentType() {

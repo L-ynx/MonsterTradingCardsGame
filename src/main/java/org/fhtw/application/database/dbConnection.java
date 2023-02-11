@@ -10,12 +10,19 @@ public class dbConnection {
     private static final String PASSWORD = "root";
 
     public static Connection getConnection() {
-        Connection connection = null;
         try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return connection;
+        return null;
+    }
+
+    public static void closeConnection(Connection connection) {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

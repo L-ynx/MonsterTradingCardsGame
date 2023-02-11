@@ -9,18 +9,46 @@ import java.sql.ResultSet;
 public class UserRepository implements Repository {
     public String findUser(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
-        try (Connection connection = dbConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)){
-            stmt.setString(1, username);
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
 
-            ResultSet result = stmt.executeQuery(query);
-            if (result.next()) {
-                return result.getString("username");
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    return result.getString("username");
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
         }
         return null;
     }
+
+    public boolean createUser(String username, String password) {
+        String query = "INSERT INTO users (username, password, coins) VALUES (?, ?, ?)";
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                stmt.setInt(3, 20);
+
+                int result = stmt.executeUpdate();
+
+                if (result != 0) {
+                    return true;
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

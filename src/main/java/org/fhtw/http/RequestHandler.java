@@ -30,6 +30,7 @@ public class RequestHandler implements Runnable {
             }
             out = socket.getOutputStream();
             out.write(response.responseBuilder().getBytes());
+            out.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
