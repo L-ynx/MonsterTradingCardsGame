@@ -24,7 +24,7 @@ public class Router {
         this.repositories = repositories;
 
         handler.put("/users", new UserController((UserRepository) repositories.get("user")));
-        handler.put("/sessions", new LoginController());
+        handler.put("/sessions", new LoginController((UserRepository) repositories.get("user")));
         handler.put("/packages", new PackagesController());
         handler.put("/transactions/packages", new TransactionController());
         handler.put("/cards", new CardsController());
