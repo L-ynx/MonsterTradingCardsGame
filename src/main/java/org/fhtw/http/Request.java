@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 public class Request {
     private String method;
     private String path;
     private String body;
+    private String token;
+    private String contentType;
+    private int contentLength;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -25,11 +29,13 @@ public class Request {
             path = splitVersionString[1];
 
             String line;
-            int contentLength = 0;
             while (!(line = br.readLine()).equals("")) {
-                if (line.startsWith("Content-Length: ")) {
+                if (line.startsWith("Authorization: Bearer "))
+                    token = line.substring("Authorization: Bearer ".length());
+                if (line.startsWith("Content-Type: "))
+                    contentType = line.substring("Content-Type: ".length());
+                if (line.startsWith("Content-Length: "))
                     contentLength = Integer.parseInt(line.substring("Content-Length: ".length()));
-                }
             }
 
             char[] buffer = new char[contentLength];
@@ -67,6 +73,15 @@ public class Request {
     public <T> T getBodyAs(Class <T> clazz) {
         try {
             return objectMapper.readValue(body, clazz);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> List<T> getBodyAsList(Class <T> clazz) {
+        try {
+            return objectMapper.readValue(body, objectMapper.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
