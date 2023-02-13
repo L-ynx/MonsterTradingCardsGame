@@ -2,6 +2,7 @@ package org.fhtw.application.controller.users;
 
 import org.fhtw.application.database.dbConnection;
 import org.fhtw.application.model.Credentials;
+import org.fhtw.application.model.Profile;
 import org.fhtw.application.repository.Repository;
 import org.fhtw.application.repository.UserRepository;
 import org.fhtw.application.router.Controller;
@@ -57,7 +58,16 @@ public class UserController implements Controller {
 
 
     private Response getUserData(Request request) {
-
+        String username = request.getUsername();
+        String token = request.getToken();
+        if (userRepo.authenticate(username, token)) {
+            Profile userProfile = new Profile();
+            userRepo.getProfile(userProfile, username);
+            System.out.println(userProfile.getName() + userProfile.getBio() + userProfile.getImage());
+        } else {
+            response.setHttpStatus(Status.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
+        }
         response.setHttpStatus(Status.OK);
         return response;
     }

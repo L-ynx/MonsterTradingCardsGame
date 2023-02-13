@@ -1,6 +1,7 @@
 package org.fhtw.application.repository;
 
 import org.fhtw.application.database.dbConnection;
+import org.fhtw.application.model.Profile;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -97,5 +98,27 @@ public class UserRepository extends Repository {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void getProfile(Profile profile, String username) {
+        String query = "SELECT name, bio, image FROM users WHERE username = ?";
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    profile.setName(result.getString("name"));
+                    profile.setBio(result.getString("bio"));
+                    profile.setImage(result.getString("image"));
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
