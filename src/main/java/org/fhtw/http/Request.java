@@ -12,6 +12,7 @@ public class Request {
     private String path;
     private String body;
     private String token;
+    private String username;
     private String contentType;
     private int contentLength;
 
@@ -30,8 +31,10 @@ public class Request {
 
             String line;
             while (!(line = br.readLine()).equals("")) {
-                if (line.startsWith("Authorization: Bearer "))
+                if (line.startsWith("Authorization: Bearer ")) {
                     token = line.substring("Authorization: Bearer ".length());
+                    username = token.substring(0, token.indexOf("-"));
+                }
                 if (line.startsWith("Content-Type: "))
                     contentType = line.substring("Content-Type: ".length());
                 if (line.startsWith("Content-Length: "))
@@ -68,6 +71,38 @@ public class Request {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public int getContentLength() {
+        return contentLength;
+    }
+
+    public void setContentLength(int contentLength) {
+        this.contentLength = contentLength;
     }
 
     public <T> T getBodyAs(Class <T> clazz) {

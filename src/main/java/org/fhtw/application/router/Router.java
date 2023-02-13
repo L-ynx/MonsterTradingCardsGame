@@ -10,6 +10,7 @@ import org.fhtw.application.controller.trading.TradingController;
 import org.fhtw.application.controller.users.LoginController;
 import org.fhtw.application.controller.packages.PackagesController;
 import org.fhtw.application.controller.users.UserController;
+import org.fhtw.application.repository.CardRepository;
 import org.fhtw.application.repository.Repository;
 import org.fhtw.application.repository.UserRepository;
 
@@ -25,9 +26,9 @@ public class Router {
 
         handler.put("/users", new UserController((UserRepository) repositories.get("user")));
         handler.put("/sessions", new LoginController((UserRepository) repositories.get("user")));
-        handler.put("/packages", new PackagesController());
+        handler.put("/packages", new PackagesController((CardRepository) repositories.get("card")));
         handler.put("/transactions/packages", new TransactionController());
-        handler.put("/cards", new CardsController());
+        handler.put("/cards", new CardsController((CardRepository) repositories.get("card")));
         handler.put("/deck", new DeckController());
         handler.put("/stats", new StatsController());
         handler.put("/scoreboard", new ScoreboardController());

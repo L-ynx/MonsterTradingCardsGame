@@ -9,6 +9,7 @@ public class RepositoryManager {
     public RepositoryManager() {
         repositories = new HashMap<>();
         repositories.put("user", new UserRepository());
+        repositories.put("card", new CardRepository());
     }
 
     public Map<String, Repository> getRepositories() {

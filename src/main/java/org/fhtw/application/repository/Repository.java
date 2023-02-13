@@ -7,13 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class Repository {
-    private boolean authenticate(String username, String token) {
+    public boolean authenticate(String username, String token) {
         String query = "SELECT token FROM session WHERE username = ?";
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
                 stmt.setString(1, username);
-                stmt.setString(2, token);
 
                 ResultSet result = stmt.executeQuery();
 

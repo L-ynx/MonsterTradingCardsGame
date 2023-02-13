@@ -2,14 +2,21 @@ package org.fhtw.application.controller.packages;
 
 import org.fhtw.application.model.Card;
 import org.fhtw.application.model.Packages;
+import org.fhtw.application.repository.CardRepository;
 import org.fhtw.application.router.Controller;
 import org.fhtw.http.Request;
 import org.fhtw.http.Response;
+import org.fhtw.http.Status;
 
 import java.util.List;
 
 public class PackagesController implements Controller {
 
+    public PackagesController(CardRepository cardRepo) {
+        this.cardRepo = cardRepo;
+    }
+
+    private final CardRepository cardRepo;
     @Override
     public Response process(Request request) {
         if (request.getMethod().equals("POST"))
@@ -19,11 +26,28 @@ public class PackagesController implements Controller {
     }
 
     private Response createPackage(Request request) {
+        String token = request.getToken();
+        String username = request.getUsername();
         List<Card> cards = request.getBodyAsList(Card.class);
-        for (Card card : cards) {
-            System.out.println("Id: " + card.getId() + ", Name: " + card.getCardName() + ", Damage: " + card.getDamage());
+
+        if (cardRepo.authenticate(username, token)) {
+            if (token.equals("admin-mtcgToken")) {
+                if (cardRepo.createPackage(cards)) {
+                    response.setHttpStatus(Status.CREATED);
+                    response.setBody("Package and cards successfully created");
+                } else {
+                    response.setHttpStatus(Status.CONFLICT);
+                    response.setBody("At least one card in the packages already exists");
+                }
+            } else {
+                response.setHttpStatus(Status.FORBIDDEN);
+                response.setBody("Provided user is not 'admin'");
+            }
+        } else {
+            response.setHttpStatus(Status.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
         }
-        Packages pkg = new Packages(cards);
+
         return response;
     }
 }

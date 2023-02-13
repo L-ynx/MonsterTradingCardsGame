@@ -8,10 +8,11 @@ public class Card {
     @JsonProperty("Name")
     private String cardName;
     @JsonProperty("Damage")
-    private double damage;
+    private float damage;
+    private String element_type;
 
     public Card(){}
-    public Card(String id, String cardName, double damage) {
+    public Card(String id, String cardName, float damage) {
         this.id = id;
         this.cardName = cardName;
         this.damage = damage;
@@ -25,8 +26,16 @@ public class Card {
         return cardName;
     }
 
-    public double getDamage() {
+    public float getDamage() {
         return damage;
+    }
+
+    public String getElement_type() {
+        return element_type;
+    }
+
+    public void setElement_type(String element_type) {
+        this.element_type = element_type;
     }
 
     public void setId(String id) {
