@@ -10,6 +10,7 @@ public class Card {
     @JsonProperty("Damage")
     private float damage;
     private String element_type;
+    private boolean monster_type;
 
     public Card(){}
     public Card(String id, String cardName, float damage) {
@@ -38,6 +39,14 @@ public class Card {
         this.element_type = element_type;
     }
 
+    public boolean isMonster_type() {
+        return monster_type;
+    }
+
+    public void setMonster_type(boolean monster_type) {
+        this.monster_type = monster_type;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -48,5 +57,20 @@ public class Card {
 
     public void setDamage(float damage) {
         this.damage = damage;
+    }
+
+    public void getElements() {
+        if (cardName.endsWith("Spell")) {
+            monster_type = false;
+            element_type = cardName.substring(0, cardName.indexOf("Spell"));
+        } else {
+            monster_type = true;
+            if (cardName.contains("Water"))
+                element_type = "Water";
+            else if (cardName.contains("Fire"))
+                element_type = "Fire";
+            else
+                element_type = "Regular";
+        }
     }
 }

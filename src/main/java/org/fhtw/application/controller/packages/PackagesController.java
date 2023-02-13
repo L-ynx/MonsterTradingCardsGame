@@ -29,12 +29,14 @@ public class PackagesController implements Controller {
         String token = request.getToken();
         String username = request.getUsername();
         List<Card> cards = request.getBodyAsList(Card.class);
+        for (Card card : cards)
+            card.getElements();
 
         if (cardRepo.authenticate(username, token)) {
             if (token.equals("admin-mtcgToken")) {
                 if (cardRepo.createPackage(cards)) {
                     response.setHttpStatus(Status.CREATED);
-                    response.setBody("Package and cards successfully created");
+                    response.setBody("Package and cards created successfully");
                 } else {
                     response.setHttpStatus(Status.CONFLICT);
                     response.setBody("At least one card in the packages already exists");

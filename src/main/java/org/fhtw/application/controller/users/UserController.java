@@ -57,6 +57,7 @@ public class UserController implements Controller {
 
 
     private Response getUserData(Request request) {
+
         response.setHttpStatus(Status.OK);
         return response;
     }

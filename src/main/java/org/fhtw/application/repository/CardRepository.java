@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CardRepository extends Repository {
     public boolean createPackage(List<Card> cards) {
@@ -75,7 +76,7 @@ public class CardRepository extends Repository {
     }
 
     public boolean createCards(Card card, int package_id) {
-        String query = "INSERT INTO cards (package_id, card_id, name, damage, card_type, element_type) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO cards (package_id, card_id, name, damage, monster_type, element_type) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -83,8 +84,8 @@ public class CardRepository extends Repository {
                 stmt.setString(2, card.getId());
                 stmt.setString(3, card.getCardName());
                 stmt.setFloat(4, card.getDamage());
-                stmt.setString(5, "Monster");
-                stmt.setString(6, "Water");
+                stmt.setBoolean(5, card.isMonster_type());
+                stmt.setString(6, card.getElement_type());
 
                 int result = stmt.executeUpdate();
                 if (result != 0) {
@@ -98,5 +99,55 @@ public class CardRepository extends Repository {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean buyPackage(String username) {
+        int pack_ID = 0;
+        if ((pack_ID = packsAvailable()) != 0) {
+            // TODO: IMPLEMENT BUYING LOGIC
+        }
+        return false;
+    }
+
+    public boolean enoughMoney(String username) {
+        String query = "SELECT coins FROM users WHERE username = ?";
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
+
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    int coins = result.getInt("coins");
+                    if (coins >= 5)
+                        return true;
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int packsAvailable() {
+        String query = "SELECT id FROM packages WHERE bought = false ORDER BY RANDOM() LIMIT 1";
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                ResultSet result = stmt.executeQuery();
+
+                if (result.next()) {
+                    return result.getInt("id");
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
