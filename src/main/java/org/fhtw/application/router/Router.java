@@ -30,7 +30,7 @@ public class Router {
         handler.put("/packages", new PackagesController((PackageRepository) repositories.get("package")));
         handler.put("/transactions/packages", new TransactionController((PackageRepository) repositories.get("package")));
         handler.put("/cards", new CardsController((CardRepository) repositories.get("card")));
-        handler.put("/deck", new DeckController());
+        handler.put("/deck", new DeckController((CardRepository) repositories.get("card")));
         handler.put("/stats", new StatsController());
         handler.put("/scoreboard", new ScoreboardController());
         handler.put("/battles", new BattleController());

@@ -41,7 +41,7 @@ public class UserController implements Controller {
         String token = request.getToken();
         String pathUser = request.getPathUser();
 
-        if (userRepo.authenticate(username, token)) {
+        if (userRepo.authenticate(username, token) && (username.equals(pathUser) || username.equals("admin"))) {
             if (userRepo.updateUser(pathUser, profile)) {
                 response.setHttpStatus(Status.OK);
                 response.setBody("User successfully updated");

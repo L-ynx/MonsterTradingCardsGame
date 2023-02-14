@@ -31,16 +31,15 @@ public class CardsController implements Controller {
         List<Card> cards;
 
         if (cardRepo.authenticate(username, token)) {
-            cards = cardRepo.showCards(username);
+            cards = cardRepo.showCards(username, "cards");
             if (!cards.isEmpty()) {
                 response.setHttpStatus(Status.OK);
                 response.setBody("Cards: ");
-                // TODO: PRINT CARDS
+                // TODO: RETURN CARDS IN JSON BODY
                 for (Card card : cards)
                     System.out.println("ID: " + card.getId() + "\nName: " + card.getCardName() + "\nDamage: " + card.getDamage());
             } else {
                 response.setHttpStatus(Status.NO_CONTENT);
-                response.setBody("The user doesn't have any cards");
             }
         } else {
             response.setHttpStatus(Status.UNAUTHORIZED);

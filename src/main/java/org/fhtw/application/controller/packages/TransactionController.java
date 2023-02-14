@@ -23,10 +23,11 @@ public class TransactionController implements Controller {
     private Response acquirePackage(Request request) {
         String username = request.getUsername();
         String token = request.getToken();
+
         if (packageRepo.authenticate(username, token)) {
             if (packageRepo.enoughMoney(username)) {
                 if (packageRepo.buyPackage(username)) {
-                    // TODO: IMPLEMENT BUYING LOGIC
+                    //TODO: SHOULD PACKAGE BUYING NOT BE RANDOM?
                     response.setHttpStatus(Status.OK);
                     response.setBody("A package has been successfully bought");     // Show cards in JSON Format
                 } else {
