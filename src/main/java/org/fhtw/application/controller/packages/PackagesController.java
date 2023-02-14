@@ -1,8 +1,7 @@
 package org.fhtw.application.controller.packages;
 
 import org.fhtw.application.model.Card;
-import org.fhtw.application.model.Packages;
-import org.fhtw.application.repository.CardRepository;
+import org.fhtw.application.repository.PackageRepository;
 import org.fhtw.application.router.Controller;
 import org.fhtw.http.Request;
 import org.fhtw.http.Response;
@@ -12,11 +11,11 @@ import java.util.List;
 
 public class PackagesController implements Controller {
 
-    public PackagesController(CardRepository cardRepo) {
-        this.cardRepo = cardRepo;
+    public PackagesController(PackageRepository packageRepo) {
+        this.packageRepo = packageRepo;
     }
 
-    private final CardRepository cardRepo;
+    private final PackageRepository packageRepo;
     @Override
     public Response process(Request request) {
         if (request.getMethod().equals("POST"))
@@ -32,9 +31,9 @@ public class PackagesController implements Controller {
         for (Card card : cards)
             card.getElements();
 
-        if (cardRepo.authenticate(username, token)) {
+        if (packageRepo.authenticate(username, token)) {
             if (token.equals("admin-mtcgToken")) {
-                if (cardRepo.createPackage(cards)) {
+                if (packageRepo.createPackage(cards)) {
                     response.setHttpStatus(Status.CREATED);
                     response.setBody("Package and cards created successfully");
                 } else {
