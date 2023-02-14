@@ -179,7 +179,30 @@ public class PackageRepository extends Repository {
 
                 int result = stmt.executeUpdate();
 
-                if (result == 5)
+                if (result == 5) {
+                    if (removeCoins(username))
+                        return true;
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean removeCoins(String username) {
+        String query = "UPDATE users SET coins = coins - ? WHERE username = ?";
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setInt(1, 5);
+                stmt.setString(2, username);
+
+                int result = stmt.executeUpdate();
+
+                if (result > 0)
                     return true;
             } finally {
                 dbConnection.closeConnection(connection);
