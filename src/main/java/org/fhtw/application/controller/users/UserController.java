@@ -39,9 +39,10 @@ public class UserController implements Controller {
         Profile profile = request.getBodyAs(Profile.class);
         String username = request.getUsername();
         String token = request.getToken();
+        String pathUser = request.getPathUser();
 
         if (userRepo.authenticate(username, token)) {
-            if (userRepo.updateUser(username, profile)) {
+            if (userRepo.updateUser(pathUser, profile)) {
                 response.setHttpStatus(Status.OK);
                 response.setBody("User successfully updated");
             } else {
@@ -52,7 +53,7 @@ public class UserController implements Controller {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
-        response.setHttpStatus(Status.OK);
+
         return response;
 
     }
@@ -77,9 +78,12 @@ public class UserController implements Controller {
     private Response getUserData(Request request) {
         String username = request.getUsername();
         String token = request.getToken();
-        if (userRepo.authenticate(username, token)) {
-            Profile userProfile = new Profile();
-            if(userRepo.getProfile(userProfile, username)) {
+        String pathUser = request.getPathUser();
+
+        if (userRepo.authenticate(username, token) && (username.equals(pathUser) || username.equals("admin"))) {
+            Profile userProfile = userRepo.getProfile(pathUser);
+
+            if(userProfile != null) {
                 System.out.println(userProfile.getName() + userProfile.getBio() + userProfile.getImage());
                 response.setHttpStatus(Status.OK);
                 response.setBody("Data successfully retrieved");
@@ -91,7 +95,7 @@ public class UserController implements Controller {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
-        response.setHttpStatus(Status.OK);
+
         return response;
     }
 }

@@ -34,9 +34,10 @@ public class CardsController implements Controller {
             cards = cardRepo.showCards(username);
             if (!cards.isEmpty()) {
                 response.setHttpStatus(Status.OK);
+                response.setBody("Cards: ");
                 // TODO: PRINT CARDS
                 for (Card card : cards)
-                    System.out.println("ID: " + card.getId() + "\nName: " + card.getCardName() + "\nDamage" + card.getDamage());
+                    System.out.println("ID: " + card.getId() + "\nName: " + card.getCardName() + "\nDamage: " + card.getDamage());
             } else {
                 response.setHttpStatus(Status.NO_CONTENT);
                 response.setBody("The user doesn't have any cards");

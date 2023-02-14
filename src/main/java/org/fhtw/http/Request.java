@@ -13,6 +13,7 @@ public class Request {
     private String body;
     private String token;
     private String username;
+    private String pathUser;
     private String contentType;
     private int contentLength;
 
@@ -28,6 +29,10 @@ public class Request {
             final String[] splitVersionString = versionString.split(" ");
             method = splitVersionString[0];
             path = splitVersionString[1];
+            if (path.startsWith("/users/")) {
+                pathUser = path.substring("/users/".length());
+                path = "/users";
+            }
 
             String line;
             while (!(line = br.readLine()).equals("")) {
@@ -87,6 +92,14 @@ public class Request {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPathUser() {
+        return pathUser;
+    }
+
+    public void setPathUser(String pathUser) {
+        this.pathUser = pathUser;
     }
 
     public String getContentType() {

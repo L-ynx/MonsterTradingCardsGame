@@ -21,7 +21,7 @@ public class CardRepository extends Repository {
 
                 ResultSet result = stmt.executeQuery();
 
-                if (result.next()) {
+                while (result.next()) {
                     Card card = new Card();
                     card.setId(result.getString("card_id"));
                     card.setCardName(result.getString("name"));

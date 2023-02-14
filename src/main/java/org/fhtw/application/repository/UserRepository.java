@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 public class UserRepository extends Repository {
     public String findUser(String username) {
         String query = "SELECT * FROM users WHERE username = ?";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -17,9 +18,8 @@ public class UserRepository extends Repository {
 
                 ResultSet result = stmt.executeQuery();
 
-                if (result.next()) {
+                if (result.next())
                     return result.getString("username");
-                }
             } finally {
                 dbConnection.closeConnection(connection);
             }
@@ -31,6 +31,7 @@ public class UserRepository extends Repository {
 
     public boolean createUser(String username, String password) {
         String query = "INSERT INTO users (username, password, coins) VALUES (?, ?, ?)";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -40,9 +41,8 @@ public class UserRepository extends Repository {
 
                 int result = stmt.executeUpdate();
 
-                if (result != 0) {
+                if (result != 0)
                     return true;
-                }
             } finally {
                 dbConnection.closeConnection(connection);
             }
@@ -65,9 +65,8 @@ public class UserRepository extends Repository {
 
                     int result = stmt.executeUpdate();
 
-                    if (result != 0) {
+                    if (result != 0)
                         return token;
-                    }
                 } finally {
                     dbConnection.closeConnection(connection);
                 }
@@ -80,6 +79,7 @@ public class UserRepository extends Repository {
 
     public boolean authenticateLogin(String username, String password) {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -88,9 +88,8 @@ public class UserRepository extends Repository {
 
                 ResultSet result = stmt.executeQuery();
 
-                if (result.next()) {
+                if (result.next())
                     return true;
-                }
             } finally {
                 dbConnection.closeConnection(connection);
             }
@@ -100,8 +99,10 @@ public class UserRepository extends Repository {
         return false;
     }
 
-    public boolean getProfile(Profile profile, String username) {
+    public Profile getProfile(String username) {
+        Profile profile = new Profile();
         String query = "SELECT name, bio, image FROM users WHERE username = ?";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -113,7 +114,7 @@ public class UserRepository extends Repository {
                     profile.setName(result.getString("name"));
                     profile.setBio(result.getString("bio"));
                     profile.setImage(result.getString("image"));
-                    return true;
+                    return profile;
                 }
             } finally {
                 dbConnection.closeConnection(connection);
@@ -121,11 +122,12 @@ public class UserRepository extends Repository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     public boolean updateUser(String username, Profile profile) {
-        String query = "UPDATE user SET name = ?, bio = ?, image = ? WHERE username = ?";
+        String query = "UPDATE users SET name = ?, bio = ?, image = ? WHERE username = ?";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -136,9 +138,8 @@ public class UserRepository extends Repository {
 
                 int result = stmt.executeUpdate();
 
-                if (result > 0) {
+                if (result > 0)
                     return true;
-                }
             } finally {
                 dbConnection.closeConnection(connection);
             }

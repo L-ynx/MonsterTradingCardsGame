@@ -103,8 +103,8 @@ public class PackageRepository extends Repository {
     public boolean buyPackage(String username) {
         int pack_ID = 0;
         if ((pack_ID = packsAvailable()) != 0) {
-            // TODO: IMPLEMENT BUYING LOGIC
-            String query = "UPDATE packages SET bought = ? WHERE package_id = ?";       // TODO: CHECK PACKAGE_ID IN DB
+            String query = "UPDATE packages SET bought = ? WHERE id = ?";
+
             try (Connection connection = dbConnection.getConnection()) {
                 assert connection != null;
                 try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -152,14 +152,14 @@ public class PackageRepository extends Repository {
 
     public int packsAvailable() {
         String query = "SELECT id FROM packages WHERE bought = false ORDER BY RANDOM() LIMIT 1";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
                 ResultSet result = stmt.executeQuery();
 
-                if (result.next()) {
+                if (result.next())
                     return result.getInt("id");
-                }
             } finally {
                 dbConnection.closeConnection(connection);
             }
@@ -171,6 +171,7 @@ public class PackageRepository extends Repository {
 
     private boolean acquireCards(String username, int pack_ID) {
         String query = "UPDATE cards SET username = ? WHERE package_id = ?";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){

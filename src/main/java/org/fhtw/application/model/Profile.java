@@ -3,8 +3,12 @@ package org.fhtw.application.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Profile {
-    @JsonProperty
-    private String name, bio, image;
+    @JsonProperty("Name")
+    private String name;
+    @JsonProperty("Bio")
+    private String bio;
+    @JsonProperty("Image")
+    private String image;
 
     public Profile() {}
 
