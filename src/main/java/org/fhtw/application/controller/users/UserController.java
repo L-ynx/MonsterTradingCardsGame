@@ -36,8 +36,25 @@ public class UserController implements Controller {
 
 
     private Response updateUser(Request request) {
-        response.setHttpStatus(Status.CREATED);
+        Profile profile = request.getBodyAs(Profile.class);
+        String username = request.getUsername();
+        String token = request.getToken();
+
+        if (userRepo.authenticate(username, token)) {
+            if (userRepo.updateUser(username, profile)) {
+                response.setHttpStatus(Status.OK);
+                response.setBody("User successfully updated");
+            } else {
+                response.setHttpStatus(Status.NOT_FOUND);
+                response.setBody("User not found");
+            }
+        } else {
+            response.setHttpStatus(Status.UNAUTHORIZED);
+            response.setBody("Access token is missing or invalid");
+        }
+        response.setHttpStatus(Status.OK);
         return response;
+
     }
 
     private Response registerUser(Request request) {
@@ -62,8 +79,14 @@ public class UserController implements Controller {
         String token = request.getToken();
         if (userRepo.authenticate(username, token)) {
             Profile userProfile = new Profile();
-            userRepo.getProfile(userProfile, username);
-            System.out.println(userProfile.getName() + userProfile.getBio() + userProfile.getImage());
+            if(userRepo.getProfile(userProfile, username)) {
+                System.out.println(userProfile.getName() + userProfile.getBio() + userProfile.getImage());
+                response.setHttpStatus(Status.OK);
+                response.setBody("Data successfully retrieved");
+            } else {
+                response.setHttpStatus(Status.NOT_FOUND);
+                response.setBody("User not found");
+            }
         } else {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");

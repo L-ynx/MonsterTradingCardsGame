@@ -100,7 +100,7 @@ public class UserRepository extends Repository {
         return false;
     }
 
-    public void getProfile(Profile profile, String username) {
+    public boolean getProfile(Profile profile, String username) {
         String query = "SELECT name, bio, image FROM users WHERE username = ?";
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
@@ -113,6 +113,7 @@ public class UserRepository extends Repository {
                     profile.setName(result.getString("name"));
                     profile.setBio(result.getString("bio"));
                     profile.setImage(result.getString("image"));
+                    return true;
                 }
             } finally {
                 dbConnection.closeConnection(connection);
@@ -120,5 +121,30 @@ public class UserRepository extends Repository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
+    }
+
+    public boolean updateUser(String username, Profile profile) {
+        String query = "UPDATE user SET name = ?, bio = ?, image = ? WHERE username = ?";
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, profile.getName());
+                stmt.setString(2, profile.getBio());
+                stmt.setString(3, profile.getImage());
+                stmt.setString(4, username);
+
+                int result = stmt.executeUpdate();
+
+                if (result > 0) {
+                    return true;
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
