@@ -11,6 +11,7 @@ public class RepositoryManager {
         repositories.put("user", new UserRepository());
         repositories.put("package", new PackageRepository());
         repositories.put("card", new CardRepository());
+        repositories.put("game", new GameRepository());
     }
 
     public Map<String, Repository> getRepositories() {

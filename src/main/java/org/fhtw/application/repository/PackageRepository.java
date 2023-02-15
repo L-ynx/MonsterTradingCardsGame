@@ -151,7 +151,8 @@ public class PackageRepository extends Repository {
     }
 
     public int packsAvailable() {
-        String query = "SELECT id FROM packages WHERE bought = false ORDER BY RANDOM() LIMIT 1";
+       // String query = "SELECT id FROM packages WHERE bought = false ORDER BY RANDOM() LIMIT 1";
+        String query = "SELECT id FROM packages WHERE bought = false LIMIT 1";
 
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
@@ -195,6 +196,7 @@ public class PackageRepository extends Repository {
 
     private boolean removeCoins(String username) {
         String query = "UPDATE users SET coins = coins - ? WHERE username = ?";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){

@@ -10,10 +10,7 @@ import org.fhtw.application.controller.trading.TradingController;
 import org.fhtw.application.controller.users.LoginController;
 import org.fhtw.application.controller.packages.PackagesController;
 import org.fhtw.application.controller.users.UserController;
-import org.fhtw.application.repository.CardRepository;
-import org.fhtw.application.repository.PackageRepository;
-import org.fhtw.application.repository.Repository;
-import org.fhtw.application.repository.UserRepository;
+import org.fhtw.application.repository.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +28,8 @@ public class Router {
         handler.put("/transactions/packages", new TransactionController((PackageRepository) repositories.get("package")));
         handler.put("/cards", new CardsController((CardRepository) repositories.get("card")));
         handler.put("/deck", new DeckController((CardRepository) repositories.get("card")));
-        handler.put("/stats", new StatsController());
-        handler.put("/scoreboard", new ScoreboardController());
+        handler.put("/stats", new StatsController((GameRepository) repositories.get("game")));
+        handler.put("/score", new ScoreboardController((GameRepository) repositories.get("game")));
         handler.put("/battles", new BattleController());
         handler.put("/tradings", new TradingController());
     }

@@ -41,6 +41,33 @@ public class UserRepository extends Repository {
 
                 int result = stmt.executeUpdate();
 
+                if (result != 0) {
+                    if (createStats(username))
+                        return true;
+                }
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private boolean createStats(String username) {
+        String query = "INSERT INTO stats (username, games_played, games_won, games_lost, elo) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, username);
+                stmt.setInt(2, 0);
+                stmt.setInt(3, 0);
+                stmt.setInt(4, 0);
+                stmt.setInt(5, 100);
+
+                int result = stmt.executeUpdate();
+
                 if (result != 0)
                     return true;
             } finally {
