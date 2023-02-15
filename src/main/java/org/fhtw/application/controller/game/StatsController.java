@@ -28,8 +28,8 @@ public class StatsController implements Controller {
         if (gameRepo.authenticate(username, token)) {
             Stats stats = gameRepo.getStats(username);
             response.setHttpStatus(Status.OK);
-            // TODO: WRITE AS JSON RESPONSE
-            System.out.println("SOME STATS: " + stats.getTotalGames() + stats.getGamesWon() + stats.getElo());
+            response.setContentType("application/json");
+            response.setBody(serializer.serialize(stats));
         } else {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");

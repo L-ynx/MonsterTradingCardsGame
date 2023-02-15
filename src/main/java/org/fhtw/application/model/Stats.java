@@ -1,8 +1,18 @@
 package org.fhtw.application.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Stats {
+    @JsonProperty("Name")
     private String username;
-    private int totalGames, gamesWon, gamesLost, elo;
+    @JsonProperty("Games played")
+    private int totalGames;
+    @JsonProperty("Wins")
+    private int gamesWon;
+    @JsonProperty("Losses")
+    private int gamesLost;
+    @JsonProperty("Elo")
+    private int elo;
 
     public String getUsername() {
         return username;

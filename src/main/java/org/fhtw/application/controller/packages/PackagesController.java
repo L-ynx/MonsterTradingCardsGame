@@ -35,7 +35,7 @@ public class PackagesController implements Controller {
             if (token.equals("admin-mtcgToken")) {
                 if (packageRepo.createPackage(cards)) {
                     response.setHttpStatus(Status.CREATED);
-                    response.setBody("Package and cards created successfully");
+                    response.setBody(serializer.serialize(cards));
                 } else {
                     response.setHttpStatus(Status.CONFLICT);
                     response.setBody("At least one card in the packages already exists");

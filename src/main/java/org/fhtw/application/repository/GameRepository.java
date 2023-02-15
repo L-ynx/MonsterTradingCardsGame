@@ -12,7 +12,7 @@ import java.util.List;
 public class GameRepository extends Repository {
 
     public Stats getStats(String username) {
-        String query = "SELECT games_played, games_won, games_lost, elo FROM stats " +
+        String query = "SELECT users.name, games_played, games_won, games_lost, elo FROM stats " +
                        "INNER JOIN users ON stats.username = users.username " +
                        "WHERE stats.username = ?";
 
@@ -25,6 +25,7 @@ public class GameRepository extends Repository {
 
                 if (result.next()) {
                     Stats stats = new Stats();
+                    stats.setUsername(result.getString("name"));
                     stats.setTotalGames(result.getInt("games_played"));
                     stats.setGamesWon(result.getInt("games_won"));
                     stats.setGamesLost(result.getInt("games_lost"));
@@ -43,7 +44,9 @@ public class GameRepository extends Repository {
 
     public List<Stats> getScoreboard() {
         List <Stats> scoreBoard = new ArrayList<>();
-        String query = "SELECT username, games_played, games_won, games_lost, elo FROM stats ORDER BY elo DESC";
+        String query = "SELECT users.name, games_played, games_won, games_lost, elo FROM stats " +
+                       "INNER JOIN users ON stats.username = users.username " +
+                       "ORDER BY elo DESC";
 
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
@@ -53,7 +56,7 @@ public class GameRepository extends Repository {
 
                 while (result.next()) {
                     Stats stats = new Stats();
-                    stats.setUsername(result.getString("username"));
+                    stats.setUsername(result.getString("name"));
                     stats.setTotalGames(result.getInt("games_played"));
                     stats.setGamesWon(result.getInt("games_won"));
                     stats.setGamesLost(result.getInt("games_lost"));

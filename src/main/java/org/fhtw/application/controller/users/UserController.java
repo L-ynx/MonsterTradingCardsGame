@@ -84,9 +84,9 @@ public class UserController implements Controller {
             Profile userProfile = userRepo.getProfile(pathUser);
 
             if(userProfile != null) {
-                System.out.println(userProfile.getName() + userProfile.getBio() + userProfile.getImage());
                 response.setHttpStatus(Status.OK);
-                response.setBody("Data successfully retrieved");
+                response.setContentType("application/json");
+                response.setBody(serializer.serialize(userProfile));
             } else {
                 response.setHttpStatus(Status.NOT_FOUND);
                 response.setBody("User not found");

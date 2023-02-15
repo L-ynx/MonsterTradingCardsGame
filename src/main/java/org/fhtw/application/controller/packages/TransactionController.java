@@ -27,9 +27,9 @@ public class TransactionController implements Controller {
         if (packageRepo.authenticate(username, token)) {
             if (packageRepo.enoughMoney(username)) {
                 if (packageRepo.buyPackage(username)) {
-                    //TODO: SHOULD PACKAGE BUYING NOT BE RANDOM?
+                    // TODO: GET CARDS AND ADD IN BODY AS JSON
                     response.setHttpStatus(Status.OK);
-                    response.setBody("A package has been successfully bought");     // Show cards in JSON Format
+                    response.setBody("A package has been successfully bought");
                 } else {
                     response.setHttpStatus(Status.NOT_FOUND);
                     response.setBody("No card package available for buying");

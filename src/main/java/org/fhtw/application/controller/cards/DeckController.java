@@ -34,7 +34,7 @@ public class DeckController implements Controller {
             if (deck.size() == 4) {
                 if (cardRepo.configureDeck(username, deck)) {
                     response.setHttpStatus(Status.OK);
-                    response.setBody("Deck may be configured");
+                    response.setBody(serializer.serialize(deck));
                 } else {
                     response.setHttpStatus(Status.FORBIDDEN);
                     response.setBody("At least one of the provided cards does not belong to the user or is not available.");
@@ -58,10 +58,8 @@ public class DeckController implements Controller {
             List<Card> cards = cardRepo.showCards(username, "decks");
             if (!cards.isEmpty()) {
                 response.setHttpStatus(Status.OK);
-                response.setBody("Cards: ");
-                // TODO: RETURN CARDS IN JSON BODY
-                for (Card card : cards)
-                    System.out.println("ID: " + card.getId() + "\nName: " + card.getCardName() + "\nDamage: " + card.getDamage());
+                response.setContentType("application/json");
+                response.setBody(serializer.serialize(cards));
             } else {
                 response.setHttpStatus(Status.NO_CONTENT);
             }

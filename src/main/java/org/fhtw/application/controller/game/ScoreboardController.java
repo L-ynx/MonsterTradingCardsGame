@@ -30,10 +30,9 @@ public class ScoreboardController implements Controller {
         if (gameRepo.authenticate(username, token)) {
             List<Stats> scoreboard = gameRepo.getScoreboard();
 
-            for (Stats scores : scoreboard)
-                System.out.println("STATS: " + scores.getElo() + scores.getUsername());
-
             response.setHttpStatus(Status.OK);
+            response.setContentType("application/json");
+            response.setBody(serializer.serialize(scoreboard));
         } else {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");

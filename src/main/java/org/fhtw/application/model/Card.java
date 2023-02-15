@@ -1,5 +1,6 @@
 package org.fhtw.application.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Card {
@@ -9,7 +10,9 @@ public class Card {
     private String cardName;
     @JsonProperty("Damage")
     private float damage;
+    @JsonIgnore
     private String element_type;
+    @JsonIgnore
     private boolean monster_type;
 
     public Card(){}

@@ -34,10 +34,8 @@ public class CardsController implements Controller {
             cards = cardRepo.showCards(username, "cards");
             if (!cards.isEmpty()) {
                 response.setHttpStatus(Status.OK);
-                response.setBody("Cards: ");
-                // TODO: RETURN CARDS IN JSON BODY
-                for (Card card : cards)
-                    System.out.println("ID: " + card.getId() + "\nName: " + card.getCardName() + "\nDamage: " + card.getDamage());
+                response.setContentType("application/json");
+                response.setBody(serializer.serialize(cards));
             } else {
                 response.setHttpStatus(Status.NO_CONTENT);
             }
