@@ -68,6 +68,7 @@ public class Card {
             element_type = cardName.substring(0, cardName.indexOf("Spell"));
         } else {
             monster_type = true;
+
             if (cardName.contains("Water"))
                 element_type = "Water";
             else if (cardName.contains("Fire"))

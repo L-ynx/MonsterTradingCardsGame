@@ -22,15 +22,24 @@ public class Router {
     public Router(Map<String, Repository> repositories) {
         this.repositories = repositories;
 
-        handler.put("/users", new UserController((UserRepository) repositories.get("user")));
-        handler.put("/sessions", new LoginController((UserRepository) repositories.get("user")));
-        handler.put("/packages", new PackagesController((PackageRepository) repositories.get("package")));
-        handler.put("/transactions/packages", new TransactionController((PackageRepository) repositories.get("package")));
-        handler.put("/cards", new CardsController((CardRepository) repositories.get("card")));
-        handler.put("/deck", new DeckController((CardRepository) repositories.get("card")));
-        handler.put("/stats", new StatsController((GameRepository) repositories.get("game")));
-        handler.put("/score", new ScoreboardController((GameRepository) repositories.get("game")));
-        handler.put("/battles", new BattleController());
+        UserController userController = new UserController((UserRepository) repositories.get("user"));
+        LoginController loginController = new LoginController((UserRepository) repositories.get("user"));
+        PackagesController packagesController = new PackagesController((PackageRepository) repositories.get("package"));
+        TransactionController transactionController = new TransactionController((PackageRepository) repositories.get("package"));
+        CardsController cardsController = new CardsController((CardRepository) repositories.get("card"));
+        DeckController deckController = new DeckController((CardRepository) repositories.get("card"));
+        StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
+        ScoreboardController scoreboardController = new ScoreboardController((GameRepository) repositories.get("game"));
+        BattleController battleController = new BattleController();
+        handler.put("/users", userController);
+        handler.put("/sessions", loginController);
+        handler.put("/packages", packagesController);
+        handler.put("/transactions/packages", transactionController);
+        handler.put("/cards", cardsController);
+        handler.put("/deck", deckController);
+        handler.put("/stats", statsController);
+        handler.put("/score", scoreboardController);
+        handler.put("/battles", battleController);
         handler.put("/tradings", new TradingController());
     }
 
