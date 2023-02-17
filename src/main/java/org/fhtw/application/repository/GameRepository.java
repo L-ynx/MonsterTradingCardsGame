@@ -1,6 +1,7 @@
 package org.fhtw.application.repository;
 
 import org.fhtw.application.database.dbConnection;
+import org.fhtw.application.model.Card;
 import org.fhtw.application.model.Stats;
 
 import java.sql.Connection;
@@ -10,6 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameRepository extends Repository {
+    public GameRepository(CardRepository cardRepo) {
+        this.cardRepo = cardRepo;
+    }
+
+    CardRepository cardRepo;
+    public void startBattle(String player1, String player2) {
+        List<Card> player1_Deck = cardRepo.showCards(player1, "decks");
+        List<Card> player2_Deck = cardRepo.showCards(player2, "decks");
+
+    }
 
     public Stats getStats(String username) {
         String query = "SELECT users.name, games_played, games_won, games_lost, elo FROM stats " +

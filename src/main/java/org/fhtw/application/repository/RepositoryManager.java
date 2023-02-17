@@ -8,10 +8,16 @@ public class RepositoryManager {
 
     public RepositoryManager() {
         repositories = new HashMap<>();
-        repositories.put("user", new UserRepository());
-        repositories.put("package", new PackageRepository());
-        repositories.put("card", new CardRepository());
-        repositories.put("game", new GameRepository());
+
+        UserRepository userRepo = new UserRepository();
+        PackageRepository packageRepo = new PackageRepository();
+        CardRepository cardRepo = new CardRepository();
+        GameRepository gameRepo = new GameRepository(cardRepo);
+
+        repositories.put("user", userRepo);
+        repositories.put("package", packageRepo);
+        repositories.put("card", cardRepo);
+        repositories.put("game", gameRepo);
     }
 
     public Map<String, Repository> getRepositories() {

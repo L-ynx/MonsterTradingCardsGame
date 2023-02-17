@@ -30,7 +30,8 @@ public class Router {
         DeckController deckController = new DeckController((CardRepository) repositories.get("card"));
         StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
         ScoreboardController scoreboardController = new ScoreboardController((GameRepository) repositories.get("game"));
-        BattleController battleController = new BattleController();
+        BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
+
         handler.put("/users", userController);
         handler.put("/sessions", loginController);
         handler.put("/packages", packagesController);
