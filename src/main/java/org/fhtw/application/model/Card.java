@@ -14,6 +14,8 @@ public class Card {
     private String element_type;
     @JsonIgnore
     private boolean monster_type;
+    @JsonIgnore
+    private String genus;
 
     public Card(){}
     public Card(String id, String cardName, float damage) {
@@ -62,6 +64,14 @@ public class Card {
         this.damage = damage;
     }
 
+    public String getGenus() {
+        return genus;
+    }
+
+    public void setGenus(String genus) {
+        this.genus = genus;
+    }
+
     public void getElements() {
         if (cardName.endsWith("Spell")) {
             monster_type = false;
@@ -69,12 +79,18 @@ public class Card {
         } else {
             monster_type = true;
 
-            if (cardName.contains("Water"))
+            if (cardName.contains("Water")) {
                 element_type = "Water";
-            else if (cardName.contains("Fire"))
+                genus = cardName.substring(0, cardName.indexOf("Water"));
+            }
+            else if (cardName.contains("Fire")) {
                 element_type = "Fire";
-            else
+                genus = cardName.substring(0, cardName.indexOf("Fire"));
+            }
+            else {
                 element_type = "Regular";
+                genus = cardName;
+            }
         }
     }
 }

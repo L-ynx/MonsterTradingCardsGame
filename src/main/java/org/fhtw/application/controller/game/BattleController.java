@@ -42,11 +42,13 @@ public class BattleController implements Controller {
 
         if (lobby.size() == 1) {
             System.out.println("Waiting for opponent...");
+
             try {
                 wait(TIMEOUT * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
             if (!battleStarted) {
                 lobby.remove(user1);
 
@@ -66,6 +68,7 @@ public class BattleController implements Controller {
 
             // TODO: BATTLE LOGIC
             System.out.println("BATTLE " + user1 + " AND " + user2);
+            gameRepo.startBattle(user1, user2);
 
             notify();
 
