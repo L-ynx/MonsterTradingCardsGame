@@ -39,7 +39,7 @@ public class DeckController implements Controller {
                     response.setBody("At least one of the provided cards does not belong to the user or is not available.");
                 }
             } else {
-                //response.setHttpStatus(Status.BAD_REQUEST);
+                response.setHttpStatus(Status.BAD_REQUEST);
                 response.setBody("The provided deck did not include the required amount of cards");
             }
         } else {
@@ -53,6 +53,7 @@ public class DeckController implements Controller {
     private Response showDeck(Request request) {
         String username = request.getUsername();
         String token = request.getToken();
+
         if (cardRepo.authenticate(username, token)) {
             List<Card> cards = cardRepo.showCards(username, "decks");
             if (!cards.isEmpty()) {

@@ -49,7 +49,12 @@ public class CardRepository extends Repository {
         boolean ownsCards = checkCards(username, card_IDs);
 
         if (ownsCards) {
-            String query = "INSERT INTO decks (username, card1_id, card2_id, card3_id, card4_id) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO decks (username, card1_id, card2_id, card3_id, card4_id) VALUES (?, ?, ?, ?, ?) " +
+                           "ON CONFLICT (username) DO UPDATE SET " +
+                           "card1_id = EXCLUDED.card1_id, " +
+                           "card2_id = EXCLUDED.card2_id, " +
+                           "card3_id = EXCLUDED.card3_id, " +
+                           "card4_id = EXCLUDED.card4_id";
 
             try (Connection connection = dbConnection.getConnection()) {
                 assert connection != null;

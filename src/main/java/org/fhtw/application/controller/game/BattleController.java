@@ -68,7 +68,7 @@ public class BattleController implements Controller {
 
             // TODO: BATTLE LOGIC
             System.out.println("BATTLE " + user1 + " AND " + user2);
-            gameRepo.startBattle(user1, user2);
+            String battleLog = gameRepo.startBattle(user1, user2);
 
             notify();
 
@@ -76,7 +76,7 @@ public class BattleController implements Controller {
             lobby.remove(user2);
 
             response.setHttpStatus(Status.OK);
-            response.setBody("The battle has been carried out successfully");
+            response.setBody(battleLog);
         }
 
         return response;

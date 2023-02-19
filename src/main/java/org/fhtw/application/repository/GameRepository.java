@@ -32,7 +32,6 @@ public class GameRepository extends Repository {
         put("Regular", "Water");
     }};
 
-
     public enum BattleOutcome {
         PLAYER1_WIN, PLAYER2_WIN, DRAW
     }
@@ -41,28 +40,39 @@ public class GameRepository extends Repository {
     }
 
     CardRepository cardRepo;
-    public boolean startBattle(String player1, String player2) {
+    StringBuilder battleLogger;
+
+    public String startBattle(String player1, String player2) {
         List<Card> player1_Deck = cardRepo.showCards(player1, "decks");
         List<Card> player2_Deck = cardRepo.showCards(player2, "decks");
 
-        if (player1.equals(player2)) {
-            System.out.println("You can't fight yourself");
-            return false;
-        }
 
-        return battle(player1, player2, player1_Deck, player2_Deck);
+        if (player1.equals(player2))
+            return "You can't fight yourself";
+        battleLogger = new StringBuilder();
+
+        battleLogger.append(asciiArt());
+
+        BattleOutcome result = battle(player1, player2, player1_Deck, player2_Deck);
+        updateStats(player1, player2, result);
+
+        return battleLogger.toString();
     }
 
-    private boolean battle(String player1, String player2, List<Card> player1_deck, List<Card> player2_deck) {
-        Random random = new Random();
+    private BattleOutcome battle(String player1, String player2, List<Card> player1_deck, List<Card> player2_deck) {
+        long seed1 = System.currentTimeMillis();
+        long seed2 = System.currentTimeMillis();
+        Random random1 = new Random(seed1);
+        Random random2 = new Random(seed2);
         int round = 0;
 
         while (round < 100) {
-            Card player1_card = player1_deck.get(random.nextInt(player1_deck.size()));
-            Card player2_card = player2_deck.get(random.nextInt(player2_deck.size()));
+            Card player1_card = player1_deck.get(random1.nextInt(player1_deck.size()));
+            Card player2_card = player2_deck.get(random2.nextInt(player2_deck.size()));
 
-            System.out.println(player1 + "'s " + player1_card.getCardName() + " (" + player1_card.getDamage() + " Damage) VS " +
-                               player2 + "'s " + player2_card.getCardName() + " (" + player2_card.getDamage() + " Damage):");
+            battleLogger.append(player1).append("'s ").append(player1_card.getCardName()).append(" (")
+                    .append(player1_card.getDamage()).append(" Damage) VS ").append(player2).append("'s ")
+                    .append(player2_card.getCardName()).append(" (").append(player2_card.getDamage()).append(" Damage):\n");
 
             BattleOutcome result = fight(player1_card, player2_card);
             if (result == BattleOutcome.PLAYER1_WIN) {
@@ -74,40 +84,39 @@ public class GameRepository extends Repository {
                 player1_deck.remove(player1_card);
 
             }
-            System.out.println(player1 + "'s cards: " + player1_deck.size());
-            System.out.println(player2 + "'s cards: " + player2_deck.size());
+            battleLogger.append(player1).append("'s cards: ").append(player1_deck.size()).append("\n");
+            battleLogger.append(player2).append("'s cards: ").append(player2_deck.size()).append("\n\n");
 
             if (player1_deck.isEmpty()) {
-                System.out.println(player2 + " won!");
-                return true;
+                battleLogger.append(player2).append(" won!\n");
+                return BattleOutcome.PLAYER2_WIN;
             } else if (player2_deck.isEmpty()) {
-                System.out.println(player1 + " won!");
-                return true;
+                battleLogger.append(player1).append(" won!\n");
+                return BattleOutcome.PLAYER1_WIN;
             }
 
             round++;
         }
-        // TODO: UPDATE STATS
 
-        return false;
+        return BattleOutcome.DRAW;
     }
 
     private BattleOutcome fight(Card player1_card, Card player2_card) {
         // Kraken Spell Battles
         if (player1_card.getCardName().equals("Kraken") && player2_card.getCardName().contains("Spell")) {
-            System.out.println(specialities.get("Kraken"));
+            battleLogger.append(specialities.get("Kraken")).append("\n");
             return BattleOutcome.PLAYER1_WIN;
         } else if (player2_card.getCardName().equals("Kraken") && player1_card.getCardName().contains("Spell")) {
-            System.out.println(specialities.get("Kraken"));
+            battleLogger.append(specialities.get("Kraken")).append("\n");
             return BattleOutcome.PLAYER2_WIN;
         }
 
         // Special Battles
         if (autoWin.containsKey(player1_card.getCardName()) && autoWin.get(player1_card.getCardName()).equals(player2_card.getCardName())) {
-            System.out.println(specialities.get(player1_card.getCardName()));
+            battleLogger.append(specialities.get(player1_card.getCardName())).append("\n");
             return BattleOutcome.PLAYER1_WIN;
         } else if (autoWin.containsKey(player2_card.getCardName()) && autoWin.get(player2_card.getCardName()).equals(player1_card.getCardName())) {
-            System.out.println(specialities.get(player2_card.getCardName()));
+            battleLogger.append(specialities.get(player2_card.getCardName())).append("\n");
             return BattleOutcome.PLAYER2_WIN;
         }
 
@@ -123,15 +132,15 @@ public class GameRepository extends Repository {
 
     private BattleOutcome normalDmg(Card player1_card, Card player2_card) {
         if (player1_card.getDamage() > player2_card.getDamage()) {
-            System.out.println(player1_card.getCardName() + " beats " + player2_card.getCardName());
+            battleLogger.append(player1_card.getCardName()).append(" beats ").append(player2_card.getCardName()).append("\n");
             return BattleOutcome.PLAYER1_WIN;
         }
         if (player2_card.getDamage() > player1_card.getDamage()) {
-            System.out.println(player2_card.getCardName() + " beats " + player1_card.getCardName());
+            battleLogger.append(player2_card.getCardName()).append(" beats ").append(player1_card.getCardName()).append("\n");
             return BattleOutcome.PLAYER2_WIN;
         }
 
-        System.out.println("The Battle results in a draw");
+        battleLogger.append("The Battle results in a draw\n");
         return BattleOutcome.DRAW;
 
     }
@@ -145,18 +154,18 @@ public class GameRepository extends Repository {
         if (effective.containsKey(card1_element) && effective.get(card1_element).equals(card2_element)) {
             card1Dmg *= 2;
             card2Dmg /= 2;
-            System.out.println(player1_card.getCardName() + " (" + card1Dmg + ") is very effective against " +
-                    player2_card.getCardName() + " (" + card2Dmg + ")");
+            battleLogger.append(player1_card.getCardName()).append(" (").append(card1Dmg).append(") is very effective against ").append(player2_card.getCardName()).append(" (").append(card2Dmg).append(")!\n");
         } else if (effective.containsKey(card2_element) && effective.get(card2_element).equals(card1_element)) {
             card1Dmg /= 2;
             card2Dmg *= 2;
-            System.out.println(player2_card.getCardName() + " (" + card2Dmg + ") is very effective against " +
-                    player1_card.getCardName() + " (" + card1Dmg + ")");
+            battleLogger.append(player2_card.getCardName()).append(" (").append(card2Dmg).append(") is very effective against ").append(player1_card.getCardName()).append(" (").append(card1Dmg).append(")!\n");
         }
 
         if (card1Dmg > card2Dmg) {
+            battleLogger.append(player1_card.getCardName()).append(" beats ").append(player2_card.getCardName()).append("\n");
             return BattleOutcome.PLAYER1_WIN;
         } else if (card1Dmg < card2Dmg) {
+            battleLogger.append(player2_card.getCardName()).append(" beats ").append(player1_card.getCardName()).append("\n");
             return BattleOutcome.PLAYER2_WIN;
         }
 
@@ -194,6 +203,36 @@ public class GameRepository extends Repository {
         return null;
     }
 
+    public void updateStats(String player1, String player2, BattleOutcome result) {
+        String query, winner = player1, loser = player2;
+
+        if (result == BattleOutcome.DRAW) {
+            query = "UPDATE stats SET games_played = games_played + 1 WHERE username IN (?, ?)";
+        } else {
+            if (result == BattleOutcome.PLAYER2_WIN) {
+                winner = player2;
+                loser = player1;
+            }
+            query = "UPDATE stats SET games_played = games_played + 1, games_won = games_won + 1, elo = elo + 3 WHERE username = ?; " +
+                           "UPDATE stats SET games_played = games_played + 1, games_lost = games_lost + 1, elo = elo - 5 WHERE username = ?;";
+        }
+
+        try (Connection connection = dbConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(query)){
+                stmt.setString(1, winner);
+                stmt.setString(2, loser);
+
+                stmt.executeUpdate();
+
+            } finally {
+                dbConnection.closeConnection(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Stats> getScoreboard() {
         List <Stats> scoreBoard = new ArrayList<>();
         String query = "SELECT users.name, games_played, games_won, games_lost, elo FROM stats " +
@@ -223,5 +262,52 @@ public class GameRepository extends Repository {
             e.printStackTrace();
         }
         return scoreBoard;
+    }
+
+    private String asciiArt() {
+        String asciiArt = """
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣶⣶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⠿⠋⢀⣀⣀⣀⣀⣤⣤⣶⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⠟⢋⣉⣁⣉⣥⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⣠⣾⣿⣿⠿⠛⠉⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠻⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⣴⡿⠟⠉⠀⠀⠀⠀⠀⠀⣽⣿⡿⠻⢿⣿⣿⣿⣿⣿⣿⣿⠀⢀⣤⠈⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⢀⣾⠏⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⠀⠀⣀⠙⣿⣿⣿⣿⣿⣿⠀⠸⣿⣷⣿⣿⠟⠀⠀⠀⠀⠀⠀⣀⣀⣀⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣀⡀⠀⠀
+                ⠀⢠⣿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡀⢸⣿⣧⣿⣿⣿⣿⣿⣿⣦⣴⣿⣿⠟⠉⣀⣤⣤⣶⠶⠿⠛⠛⠛⠉⠉⠉⠁⠀⠀⠀⠀⠀⠉⠉⠛⠿⣷⡄
+                ⢠⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣠⣶⣤⣭⣭⣤⣄⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣽⡇
+                ⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣉⠙⠿⣿⣿⣿⣿⡿⠟⢡⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⡷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⠟⠀
+                ⠘⢿⣧⣀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣤⣴⡾⠟⠋⠁⣀⣤⣤⣤⣤⣴⣶⣿⣿⣿⣿⣷⣦⡀⠀⠀⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⠟⠁⠀⠀
+                ⠀⠀⠉⠛⠿⠷⣶⣶⣶⣶⡶⠿⠟⠛⠉⠁⠀⠀⢠⣾⣿⡿⠟⠛⠉⢻⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⠟⠁⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⡀⠀⠀⠀⠀⠀⠀⣠⣴⡿⠋⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⢀⣤⣶⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⢹⣿⣿⣿⣿⣿⣿⣷⠘⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⡆⢻⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣟⢿⣿⣿⣿⣿⣿⣷⡄⠹⢿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠙⠿⣦⡙⢿⣿⣿⣿⣿⣿⣦⡄⠙⠛⢿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣶⣤⣄⠀⠈⠙⠛⠛⠛⠉⠀⠀⠀⠈⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⡿⣿⣯⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠙⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣻⣿⣿⣹⡿⠀⠀⠀⠀⠀⠀⠀⠀
+                ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠃⠻⠿⠃⠁⠀⠀⠀⠀⠀⠀⠀⠀
+                """;
+
+        String gameStart = """
+                   _____                         _____ _             _  \s
+                  / ____|                       / ____| |           | | \s
+                 | |  __  __ _ _ __ ___   ___  | (___ | |_ __ _ _ __| |_\s
+                 | | |_ |/ _` | '_ ` _ \\ / _ \\  \\___ \\| __/ _` | '__| __|
+                 | |__| | (_| | | | | | |  __/  ____) | || (_| | |  | |_\s
+                  \\_____|\\__,_|_| |_| |_|\\___| |_____/ \\__\\__,_|_|   \\__|
+                                                                        \s
+                                                                        \s
+
+                """;
+
+        return asciiArt + gameStart;
     }
 }
