@@ -5,32 +5,29 @@ import org.fhtw.application.router.Router;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
+
 
 public class Server {
     private final int PORT = 10001;
     private final Router router;
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
 
     public Server(Router router) {
         this.router = router;
     }
 
     public void start() {
-        ThreadGroup group = new ThreadGroup("MyThreadGroup");
-
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            System.out.println("Listening on port: " + PORT);
+            logger.info("Listening on port: " + PORT + "\n");
+
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Accepted connection: " + socket.getInetAddress());
-                RequestHandler request = new RequestHandler(socket, router);
-                new Thread(group, request).start();
+                logger.info("Accepted connection: " + socket.getInetAddress() + "\n");
 
-                // List current threads for testing purposes
-               /* Thread[] threads = new Thread[group.activeCount()];
-                group.enumerate(threads);
-                for (Thread t : threads) {
-                    System.out.println("Thread: " + t.getName() + ", State: " + t.getState());
-                }*/
+                RequestHandler request = new RequestHandler(socket, router);
+
+                new Thread(request).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

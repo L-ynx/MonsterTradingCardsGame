@@ -17,6 +17,9 @@ public class TransactionController implements Controller {
         if (request.getMethod().equals("POST"))
             return acquirePackage(request);
 
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
+
         return response;
     }
 
@@ -27,7 +30,6 @@ public class TransactionController implements Controller {
         if (packageRepo.authenticate(username, token)) {
             if (packageRepo.enoughMoney(username)) {
                 if (packageRepo.buyPackage(username)) {
-                    // TODO: GET CARDS AND ADD IN BODY AS JSON
                     response.setHttpStatus(Status.OK);
                     response.setBody("A package has been successfully bought");
                 } else {

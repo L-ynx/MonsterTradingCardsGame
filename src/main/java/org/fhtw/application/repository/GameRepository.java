@@ -40,7 +40,7 @@ public class GameRepository extends Repository {
     }
 
     CardRepository cardRepo;
-    StringBuilder battleLogger;
+    StringBuilder battleLogger = new StringBuilder();
 
     public String startBattle(String player1, String player2) {
         List<Card> player1_Deck = cardRepo.showCards(player1, "decks");
@@ -49,12 +49,16 @@ public class GameRepository extends Repository {
 
         if (player1.equals(player2))
             return "You can't fight yourself";
-        battleLogger = new StringBuilder();
+
+        battleLogger.delete(0, battleLogger.length());
 
         battleLogger.append(asciiArt());
 
         BattleOutcome result = battle(player1, player2, player1_Deck, player2_Deck);
         updateStats(player1, player2, result);
+
+        if (result != BattleOutcome.DRAW)
+            battleLogger.append(bigBunny());
 
         return battleLogger.toString();
     }
@@ -75,6 +79,7 @@ public class GameRepository extends Repository {
                     .append(player2_card.getCardName()).append(" (").append(player2_card.getDamage()).append(" Damage):\n");
 
             BattleOutcome result = fight(player1_card, player2_card);
+
             if (result == BattleOutcome.PLAYER1_WIN) {
                 player1_deck.add(player2_card);
                 player2_deck.remove(player2_card);
@@ -82,19 +87,17 @@ public class GameRepository extends Repository {
             } else if (result == BattleOutcome.PLAYER2_WIN) {
                 player2_deck.add(player1_card);
                 player1_deck.remove(player1_card);
-
             }
             battleLogger.append(player1).append("'s cards: ").append(player1_deck.size()).append("\n");
             battleLogger.append(player2).append("'s cards: ").append(player2_deck.size()).append("\n\n");
 
             if (player1_deck.isEmpty()) {
-                battleLogger.append(player2).append(" won!\n");
+                battleLogger.append(player2).append(" won the match!\n\n").append(player2).append(":\n");
                 return BattleOutcome.PLAYER2_WIN;
             } else if (player2_deck.isEmpty()) {
-                battleLogger.append(player1).append(" won!\n");
+                battleLogger.append(player1).append(" won the match!\n\n").append(player1).append(":\n");
                 return BattleOutcome.PLAYER1_WIN;
             }
-
             round++;
         }
 
@@ -265,6 +268,8 @@ public class GameRepository extends Repository {
     }
 
     private String asciiArt() {
+        // ascii source: "https://emojicombos.com"
+
         String asciiArt = """
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣶⣶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
                 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -309,5 +314,20 @@ public class GameRepository extends Repository {
                 """;
 
         return asciiArt + gameStart;
+    }
+
+    private String bigBunny() {
+        return """
+                
+                ⠀     (\\__/)
+                      (•ㅅ•)      Don’t talk to
+                   ＿ノヽ ノ＼＿     me or my son
+                `/　`/ ⌒Ｙ⌒ Ｙ  ヽ     ever again.
+                (  (三ヽ人　/ 　 |
+                |　ﾉ⌒＼ ￣￣ヽ  ノ
+                ヽ＿＿＿＞､＿_／
+                     ｜(王ﾉ 〈  (\\__/)
+                     /ﾐ`ー―彡\\  (•ㅅ•)
+                    / ╰ ╯ \\ / \\>""";
     }
 }

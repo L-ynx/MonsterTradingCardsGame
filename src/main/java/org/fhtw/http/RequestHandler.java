@@ -3,7 +3,10 @@ package org.fhtw.http;
 import org.fhtw.application.router.Controller;
 import org.fhtw.application.router.Router;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
 
 public class RequestHandler implements Runnable {
@@ -25,9 +28,9 @@ public class RequestHandler implements Runnable {
             Response response = new Response();
 
             Controller controller = router.route(request.getPath());
-            if (controller != null) {
+            if (controller != null)
                 response = controller.process(request);
-            }
+
             out = socket.getOutputStream();
             out.write(response.responseBuilder().getBytes());
             out.flush();
@@ -43,8 +46,10 @@ public class RequestHandler implements Runnable {
         try {
             if (br != null)
                 br.close();
+
             if (out != null)
                 out.close();
+
             socket.close();
         } catch (IOException e) {
             throw new RuntimeException(e);

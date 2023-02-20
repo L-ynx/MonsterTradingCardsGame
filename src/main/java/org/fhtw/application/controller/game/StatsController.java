@@ -18,6 +18,9 @@ public class StatsController implements Controller {
         if (request.getMethod().equals("GET"))
             return retrieveStats(request);
 
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
+
         return response;
     }
 

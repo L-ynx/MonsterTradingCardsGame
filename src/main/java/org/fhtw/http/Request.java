@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Request {
     private String method;
@@ -18,6 +19,7 @@ public class Request {
     private int contentLength;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger logger = Logger.getLogger(Request.class.getName());
 
     public Request(BufferedReader br) {
         parseRequest(br);
@@ -27,8 +29,10 @@ public class Request {
         try {
             String versionString = br.readLine();
             final String[] splitVersionString = versionString.split(" ");
+
             method = splitVersionString[0];
             path = splitVersionString[1];
+
             if (path.startsWith("/users/")) {
                 pathUser = path.substring("/users/".length());
                 path = "/users";
@@ -42,6 +46,7 @@ public class Request {
                 }
                 if (line.startsWith("Content-Type: "))
                     contentType = line.substring("Content-Type: ".length());
+
                 if (line.startsWith("Content-Length: "))
                     contentLength = Integer.parseInt(line.substring("Content-Length: ".length()));
             }
@@ -49,7 +54,8 @@ public class Request {
             char[] buffer = new char[contentLength];
             br.read(buffer, 0, contentLength);
             body = new String(buffer);
-            print();
+
+            logger.info("Method: " + method + "\nPath: " + path + "\nBody: " + body);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,12 +140,5 @@ public class Request {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-
-    public void print() {
-        System.out.println("Method: " + method);
-        System.out.println("Path: " + path);
-        System.out.println("Body: " + body);
     }
 }

@@ -11,7 +11,6 @@ public class Profile {
     private String image;
 
     public Profile() {}
-
     public Profile(String name, String bio, String image) {
         this.name = name;
         this.bio = bio;

@@ -18,6 +18,7 @@ public class LoginController implements Controller {
         if (request.getMethod().equals("POST"))
             return loginUser(request.getBodyAs(Credentials.class));
 
+        response.setBody("Wrong method!");
         response.setHttpStatus(Status.BAD_REQUEST);
 
         return response;
@@ -25,6 +26,7 @@ public class LoginController implements Controller {
 
     private Response loginUser(Credentials cred) {
         String token;
+
         if ((token = userRepo.loginUser(cred.getUsername(), cred.getPassword())) != null) {
             response.setHttpStatus(Status.OK);
             response.setContentType("application/json");

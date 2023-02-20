@@ -16,7 +16,7 @@ public class BattleController implements Controller {
         this.gameRepo = gameRepo;
     }
 
-    private List<String> lobby = new ArrayList<>();
+    private final List<String> lobby = new ArrayList<>();
     private final int TIMEOUT = 10;     // Seconds
     private boolean battleStarted = false;
     private final GameRepository gameRepo;
@@ -31,6 +31,8 @@ public class BattleController implements Controller {
                 response.setBody("Access token is missing or invalid");
             }
         }
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
 
         return response;
     }
@@ -41,7 +43,7 @@ public class BattleController implements Controller {
         String user1 = lobby.get(0);
 
         if (lobby.size() == 1) {
-            System.out.println("Waiting for opponent...");
+            System.out.println("Waiting for opponent...\n");
 
             try {
                 wait(TIMEOUT * 1000);
@@ -66,9 +68,8 @@ public class BattleController implements Controller {
             battleStarted = true;
             String user2 = lobby.get(1);
 
-            // TODO: BATTLE LOGIC
-            System.out.println("BATTLE " + user1 + " AND " + user2);
             String battleLog = gameRepo.startBattle(user1, user2);
+            System.out.println("Battle finished");
 
             notify();
 
@@ -78,7 +79,6 @@ public class BattleController implements Controller {
             response.setHttpStatus(Status.OK);
             response.setBody(battleLog);
         }
-
         return response;
     }
 }

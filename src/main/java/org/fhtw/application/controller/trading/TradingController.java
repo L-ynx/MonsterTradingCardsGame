@@ -3,6 +3,7 @@ package org.fhtw.application.controller.trading;
 import org.fhtw.application.router.Controller;
 import org.fhtw.http.Request;
 import org.fhtw.http.Response;
+import org.fhtw.http.Status;
 
 public class TradingController implements Controller {
     @Override
@@ -14,6 +15,8 @@ public class TradingController implements Controller {
                 return trade();
             return createDeal();
         }
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
 
         return response;
     }

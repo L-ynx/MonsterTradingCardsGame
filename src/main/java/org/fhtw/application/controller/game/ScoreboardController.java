@@ -20,6 +20,9 @@ public class ScoreboardController implements Controller {
         if (request.getMethod().equals("GET"))
             return retrieveScoreboard(request);
 
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
+
         return response;
     }
 

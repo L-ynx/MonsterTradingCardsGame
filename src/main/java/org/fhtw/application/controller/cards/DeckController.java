@@ -22,6 +22,9 @@ public class DeckController implements Controller {
         else if (request.getMethod().equals("PUT"))
             return configureDeck(request);
 
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
+
         return response;
     }
 
@@ -46,7 +49,6 @@ public class DeckController implements Controller {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
-
         return response;
     }
 

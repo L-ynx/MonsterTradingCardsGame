@@ -21,6 +21,9 @@ public class PackagesController implements Controller {
         if (request.getMethod().equals("POST"))
             return createPackage(request);
 
+        response.setBody("Wrong method!");
+        response.setHttpStatus(Status.BAD_REQUEST);
+
         return response;
     }
 
@@ -28,6 +31,7 @@ public class PackagesController implements Controller {
         String token = request.getToken();
         String username = request.getUsername();
         List<Card> cards = request.getBodyAsList(Card.class);
+
         for (Card card : cards)
             card.getElements();
 
@@ -48,7 +52,6 @@ public class PackagesController implements Controller {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
-
         return response;
     }
 }

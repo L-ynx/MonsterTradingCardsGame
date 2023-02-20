@@ -1,16 +1,12 @@
 package org.fhtw.application.controller.users;
 
-import org.fhtw.application.database.dbConnection;
 import org.fhtw.application.model.Credentials;
 import org.fhtw.application.model.Profile;
-import org.fhtw.application.repository.Repository;
 import org.fhtw.application.repository.UserRepository;
 import org.fhtw.application.router.Controller;
 import org.fhtw.http.Request;
 import org.fhtw.http.Response;
 import org.fhtw.http.Status;
-
-import java.sql.Connection;
 
 public class UserController implements Controller {
     public UserController(UserRepository userRepo) {
@@ -29,6 +25,7 @@ public class UserController implements Controller {
                 return updateUser(request);
         }
 
+        response.setBody("Wrong method!");
         response.setHttpStatus(Status.BAD_REQUEST);
 
         return response;
@@ -53,9 +50,7 @@ public class UserController implements Controller {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
-
         return response;
-
     }
 
     private Response registerUser(Request request) {
@@ -70,7 +65,6 @@ public class UserController implements Controller {
             response.setHttpStatus(Status.CONFLICT);
             response.setBody("User with same username already registered");
         }
-
         return response;
     }
 
@@ -95,7 +89,6 @@ public class UserController implements Controller {
             response.setHttpStatus(Status.UNAUTHORIZED);
             response.setBody("Access token is missing or invalid");
         }
-
         return response;
     }
 }
