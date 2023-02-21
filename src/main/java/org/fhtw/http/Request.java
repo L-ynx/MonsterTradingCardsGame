@@ -21,6 +21,8 @@ public class Request {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = Logger.getLogger(Request.class.getName());
 
+    public Request() {}
+
     public Request(BufferedReader br) {
         parseRequest(br);
     }

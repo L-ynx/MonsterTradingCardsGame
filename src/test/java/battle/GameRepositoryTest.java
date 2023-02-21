@@ -91,6 +91,27 @@ public class GameRepositoryTest {
         assertEquals(GameRepository.BattleOutcome.PLAYER2_WIN , battleOutcome);
     }
 
+    // Fight results in draw
+    @Test
+    void drawFight() throws Exception {
+        Card card1 = new Card();
+        card1.setCardName("Goblin");
+        card1.setDamage(10.0f);
+        card1.setMonster_type(true);
+
+        Card card2 = new Card();
+        card2.setCardName("Potato");
+        card2.setDamage(10.0f);
+        card2.setMonster_type(true);
+
+        Method fight = gameRepo.getClass().getDeclaredMethod("fight", Card.class, Card.class);
+        fight.setAccessible(true);
+
+        Object battleOutcome = fight.invoke(gameRepo, card1, card2);
+
+        assertEquals(GameRepository.BattleOutcome.DRAW , battleOutcome);
+    }
+
     @Test
     void player1Win() throws Exception {
 
