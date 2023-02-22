@@ -13,11 +13,14 @@ public class RepositoryManager {
         PackageRepository packageRepo = new PackageRepository();
         CardRepository cardRepo = new CardRepository();
         GameRepository gameRepo = new GameRepository(cardRepo);
+        TradingRepository tradingRepo = new TradingRepository();
 
         repositories.put("user", userRepo);
         repositories.put("package", packageRepo);
         repositories.put("card", cardRepo);
         repositories.put("game", gameRepo);
+        repositories.put("trade", tradingRepo);
+
     }
 
     public Map<String, Repository> getRepositories() {

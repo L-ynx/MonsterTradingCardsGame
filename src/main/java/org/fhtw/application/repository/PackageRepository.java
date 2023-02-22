@@ -75,7 +75,7 @@ public class PackageRepository extends Repository {
     }
 
     public boolean createCards(Card card, int package_id) {
-        String query = "INSERT INTO cards (package_id, card_id, name, damage, monster_type, element_type) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO cards (package_id, card_id, name, damage, monster_type, element_type, locked) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){
@@ -85,6 +85,7 @@ public class PackageRepository extends Repository {
                 stmt.setFloat(4, card.getDamage());
                 stmt.setBoolean(5, card.isMonster_type());
                 stmt.setString(6, card.getElement_type());
+                stmt.setBoolean(7, false);
 
                 int result = stmt.executeUpdate();
                 if (result != 0) {
@@ -151,7 +152,6 @@ public class PackageRepository extends Repository {
     }
 
     public int packsAvailable() {
-       // String query = "SELECT id FROM packages WHERE bought = false ORDER BY RANDOM() LIMIT 1";
         String query = "SELECT id FROM packages WHERE bought = false LIMIT 1";
 
         try (Connection connection = dbConnection.getConnection()) {

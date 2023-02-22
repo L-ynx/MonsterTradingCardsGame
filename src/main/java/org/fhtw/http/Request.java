@@ -15,6 +15,7 @@ public class Request {
     private String token;
     private String username;
     private String pathUser;
+    private String tradingId;
     private String contentType;
     private int contentLength;
 
@@ -38,6 +39,11 @@ public class Request {
             if (path.startsWith("/users/")) {
                 pathUser = path.substring("/users/".length());
                 path = "/users";
+            }
+
+            if (path.startsWith("/tradings/")) {
+                tradingId = path.substring("/tradings/".length());
+                path = "/tradings";
             }
 
             String line;
@@ -108,6 +114,14 @@ public class Request {
 
     public void setPathUser(String pathUser) {
         this.pathUser = pathUser;
+    }
+
+    public String getTradingId() {
+        return tradingId;
+    }
+
+    public void setTradingId(String tradingId) {
+        this.tradingId = tradingId;
     }
 
     public String getContentType() {

@@ -78,7 +78,8 @@ public class CardRepository extends Repository {
     }
 
     private boolean checkCards(String username, List<String> card_IDs) {
-        String query = "SELECT COUNT(*) FROM cards WHERE card_id in (?, ?, ?, ?) AND username = ?";
+        String query = "SELECT COUNT(*) FROM cards WHERE card_id in (?, ?, ?, ?) AND username = ? AND locked = false";
+
         try (Connection connection = dbConnection.getConnection()) {
             assert connection != null;
             try (PreparedStatement stmt = connection.prepareStatement(query)){

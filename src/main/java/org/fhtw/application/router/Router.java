@@ -31,6 +31,7 @@ public class Router {
         StatsController statsController = new StatsController((GameRepository) repositories.get("game"));
         ScoreboardController scoreboardController = new ScoreboardController((GameRepository) repositories.get("game"));
         BattleController battleController = new BattleController((GameRepository) repositories.get("game"));
+        TradingController tradingController = new TradingController((TradingRepository) repositories.get("trade"));
 
         handler.put("/users", userController);
         handler.put("/sessions", loginController);
@@ -41,7 +42,7 @@ public class Router {
         handler.put("/stats", statsController);
         handler.put("/score", scoreboardController);
         handler.put("/battles", battleController);
-        handler.put("/tradings", new TradingController());
+        handler.put("/tradings", tradingController);
     }
 
     public Controller route(String path) {
