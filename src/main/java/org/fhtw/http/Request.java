@@ -18,6 +18,7 @@ public class Request {
     private String tradingId;
     private String contentType;
     private int contentLength;
+    private String format;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final Logger logger = Logger.getLogger(Request.class.getName());
@@ -44,6 +45,11 @@ public class Request {
             if (path.startsWith("/tradings/")) {
                 tradingId = path.substring("/tradings/".length());
                 path = "/tradings";
+            }
+
+            if (path.startsWith("/deck?")) {
+                format = path.substring("/deck?format=".length());
+                path = "/deck";
             }
 
             String line;
@@ -122,6 +128,10 @@ public class Request {
 
     public void setTradingId(String tradingId) {
         this.tradingId = tradingId;
+    }
+
+    public String getFormat() {
+        return format;
     }
 
     public String getContentType() {

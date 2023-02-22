@@ -25,7 +25,7 @@ public class CardTest {
         assertEquals("Regular", regularSpell.getElement_type());
     }
 
-    // Test monster and elementtype of monster card
+    // Test monster and element type of monster card
     @Test
     void monsterCard() {
         Card waterGoblin = provideCards("WaterGoblin");

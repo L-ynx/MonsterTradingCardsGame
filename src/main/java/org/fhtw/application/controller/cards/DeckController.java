@@ -58,10 +58,24 @@ public class DeckController implements Controller {
 
         if (cardRepo.authenticate(username, token)) {
             List<Card> cards = cardRepo.showCards(username, "decks");
+
             if (!cards.isEmpty()) {
                 response.setHttpStatus(Status.OK);
-                response.setContentType("application/json");
-                response.setBody(serializer.serialize(cards));
+                String format = request.getFormat();
+                if (format != null && format.equals("plain")) {
+                    StringBuilder deck = new StringBuilder();
+                    deck.append("Deck of ").append(username).append(": \n");
+
+                    for (Card card : cards) {
+                        deck.append("ID ").append(card.getId()).append(" Name: ").append(card.getCardName()).append(" Damage: ").append(card.getDamage()).append("\n");
+                    }
+                    response.setContentType("plain/text");
+                    response.setBody(deck.toString());
+                }
+                else {
+                    response.setContentType("application/json");
+                    response.setBody(serializer.serialize(cards));
+                }
             } else {
                 response.setHttpStatus(Status.NO_CONTENT);
             }

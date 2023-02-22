@@ -1,7 +1,7 @@
 package http;
 
 import org.fhtw.application.model.Card;
-import org.fhtw.application.model.User;
+import org.fhtw.application.model.Credentials;
 import org.fhtw.http.Request;
 import org.junit.jupiter.api.Test;
 
@@ -40,19 +40,19 @@ public class RequestTest {
     }
 
     @Test
-    void jsonToUser() {
+    void jsonToCredentials() {
         String json = """
                 {
-                    "username": "Tanjiro",
-                    "password": "1234"
+                    "Username": "Tanjiro",
+                    "Password": "1234"
                 }""";
 
         request.setBody(json);
 
-        User user = request.getBodyAs(User.class);
+        Credentials credentials = request.getBodyAs(Credentials.class);
 
-        assertEquals("Tanjiro", user.getUsername());
-        assertEquals("1234", user.getPassword());
+        assertEquals("Tanjiro", credentials.getUsername());
+        assertEquals("1234", credentials.getPassword());
     }
 
     @Test

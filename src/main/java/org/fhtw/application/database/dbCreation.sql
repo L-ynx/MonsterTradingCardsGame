@@ -44,12 +44,20 @@ create table Packages (
     bought bool default false not null
 );
 
-create table decks (
+create table Decks (
     username varchar(255) not null unique,
     card1_id varchar(255),
     card2_id varchar(255),
     card3_id varchar(255),
     card4_id varchar(255)
+);
+
+create table Trade (
+    trade_id varchar(255) not null,
+    card_id varchar(255) not null,
+    type varchar(50) not null,
+    minDmg int,
+    element varchar(50)
 );
 
 -- RUN CURL SCRIPT BEFORE THIS:
