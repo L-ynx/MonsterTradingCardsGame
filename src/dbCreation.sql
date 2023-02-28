@@ -88,3 +88,4 @@ DELETE FROM decks;
 DELETE FROM session;
 DELETE FROM stats;
 DELETE FROM users;
+DELETE FROM trade

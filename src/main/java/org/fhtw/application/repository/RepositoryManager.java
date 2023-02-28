@@ -20,7 +20,6 @@ public class RepositoryManager {
         repositories.put("card", cardRepo);
         repositories.put("game", gameRepo);
         repositories.put("trade", tradingRepo);
-
     }
 
     public Map<String, Repository> getRepositories() {

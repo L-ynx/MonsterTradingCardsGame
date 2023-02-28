@@ -94,18 +94,4 @@ public class BattleControllerTest {
         assertEquals("Wrong method!", response.getBody());
         assertEquals(Status.BAD_REQUEST, response.getHttpStatus());
     }
-
-    //@Test
-    void wrongCredentials() {
-        // Database Connection needed
-        Request request = new Request();
-        request.setMethod("POST");
-        request.setUsername("kienboec");
-        request.setToken("nonExistent-mtcgToken");
-
-        Response response = battleController.process(request);
-
-        assertEquals("Access token is missing or invalid", response.getBody());
-        assertEquals(Status.UNAUTHORIZED, response.getHttpStatus());
-    }
 }

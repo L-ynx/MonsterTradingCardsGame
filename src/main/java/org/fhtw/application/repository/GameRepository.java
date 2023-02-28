@@ -13,14 +13,14 @@ public class GameRepository extends Repository {
 
     private static final Map<String, String> autoWin = new HashMap<>() {{
         put("Dragon", "Goblin");
-        put("Wizzard", "Ork");
+        put("Wizard", "Ork");
         put("WaterSpell", "Knight");
         put("FireElf", "Dragon");
     }};
 
     private static final Map<String, String> specialities = new HashMap<>() {{
         put("Dragon", "The Goblin is too afraid to attack the Dragon.");
-        put("Wizzard", "Because the Wizzard is controlling the Ork, the Ork can't deal any damage.");
+        put("Wizard", "Because the Wizard is controlling the Ork, the Ork can't deal any damage.");
         put("WaterSpell", "The heavy armor of the Knight made him drown in the water.");
         put("Kraken", "The Kraken is immune to every Spell");
         put("FireElf", "Because the FireElves have known the Dragons since they were little, the FireElf easily evades all attacks");

@@ -30,9 +30,6 @@ public class BattleController implements Controller {
                 response.setHttpStatus(Status.UNAUTHORIZED);
                 response.setBody("Access token is missing or invalid");
             }
-        } else {
-            response.setBody("Wrong method!");
-            response.setHttpStatus(Status.BAD_REQUEST);
         }
         response.setBody("Wrong method!");
         response.setHttpStatus(Status.BAD_REQUEST);
